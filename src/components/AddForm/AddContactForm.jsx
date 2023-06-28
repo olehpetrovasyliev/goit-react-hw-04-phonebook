@@ -1,63 +1,79 @@
+import { useState } from 'react';
 import { StyledAddForm } from './AddForm.styled';
 // import propTypes from 'prop-types';
 import { AddContactInput } from './AddFormInpt/AddFormInput';
 import { AddContactBtn } from './AddFormInpt/AddFormInput.styled';
-import { Component } from 'react';
-// import { Phonebook } from 'components/Phonebook/Phonebook';
+import { INIT_STATE } from 'INIT_STATE';
 
-export class AddContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
-  handleChange = e => {
+export const AddContactForm = () => {
+  // const [name, setName] = useState(' ');
+  // const [number, setNumber] = useState(' ');
+  const [userData, setUserData] = useState({ ...INIT_STATE });
+  const { name, number } = userData;
+  const handleChange = e => {
+    // console.log(1);
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    setUserData({ [name]: value });
+    console.log({ [name]: value });
   };
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-
-    this.props.onSubmit(this.state);
-    console.log(this.state);
-    this.setState({ name: '', number: '' });
+    console.log(1);
   };
-  render() {
-    return (
-      <StyledAddForm onSubmit={this.handleSubmit}>
-        <label>
-          Name
-          <AddContactInput
-            name={'name'}
-            type={'text'}
-            validator={
-              "^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            }
-            key={crypto.randomUUID}
-            title={
-              "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            }
-            cb={this.handleChange}
-            value={this.state.name}
-          />
-        </label>
-        <label>
-          Number
-          <AddContactInput
-            name={'number'}
-            type={'tel'}
-            validator={
-              '+?d{1,4}?[-.s]?(?d{1,3}?)?[-.s]?d{1,4}[-.s]?d{1,4}[-.s]?d{1,9}'
-            }
-            key={crypto.randomUUID}
-            title={
-              'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
-            }
-            cb={this.handleChange}
-            value={this.state.number}
-          />
-        </label>
-        <AddContactBtn type="submit">Add contact</AddContactBtn>
-      </StyledAddForm>
-    );
-  }
-}
+  return (
+    <StyledAddForm onSubmit={handleSubmit}>
+      <label>
+        Name
+        <AddContactInput
+          name={'name'}
+          type={'text'}
+          validator={
+            "^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          }
+          key={crypto.randomUUID}
+          title={
+            "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          }
+          cb={handleChange}
+          value={name}
+        />
+      </label>
+      <label>
+        Number
+        <AddContactInput
+          name={'number'}
+          type={'tel'}
+          validator={
+            '+?d{1,4}?[-.s]?(?d{1,3}?)?[-.s]?d{1,4}[-.s]?d{1,4}[-.s]?d{1,9}'
+          }
+          title={
+            'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
+          }
+          cb={handleChange}
+          value={number}
+        />
+      </label>
+      <AddContactBtn type="submit">Add contact</AddContactBtn>
+    </StyledAddForm>
+  );
+};
+// export class AddContactForm extends Component {
+//   state = {
+//     name: '',
+//     number: '',
+//   };
+//   handleChange = e => {
+//     const { name, value } = e.target;
+//     this.setState({ [name]: value });
+//   };
+//   handleSubmit = e => {
+//     e.preventDefault();
+
+//     this.props.onSubmit(this.state);
+//     console.log(this.state);
+//     this.setState({ name: '', number: '' });
+//   };
+//   render() {
+//
+//   }
+// }
