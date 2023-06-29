@@ -3,92 +3,163 @@
 // export const App = () => {
 //   return <Phonebook />;
 // };
-import { Component, React } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { Filter } from 'components/Filter/Filter';
 
 import { AddContactForm } from 'components/AddForm/AddContactForm';
 import { ContactsList } from 'components/ContactsList/ContactsList';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
-  componentDidMount() {
-    const data = JSON.parse(localStorage.getItem('contactsArr')) ?? [];
-    this.setState({ contacts: data });
-  }
+export const App = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      console.log('hi');
 
-  componentDidUpdate(_, prewState) {
-    if (this.state.contacts !== prewState.contacts) {
-      window.localStorage.setItem(
-        'contactsArr',
-        JSON.stringify(this.state.contacts)
-      );
+      const data = JSON.parse(localStorage.getItem('contactsArr')) ?? [];
+      setContacts(data);
+
+      isFirstRender.current = false;
+      // return;
+    } else {
+      console.log('hello');
     }
-  }
+  }, [contacts]);
 
-  handleSubmit = ({ name, number }) => {
-    this.state.contacts.some(contact => contact.name === name)
+  const handleSubmit = ({ name, number }) => {
+    contacts.some(contact => contact.name === name)
       ? alert('Contact already exists')
-      : this.setState(prewState => ({
-          contacts: [
-            ...prewState.contacts,
-            {
-              name,
-              number,
-              id: crypto.randomUUID(),
-            },
-          ],
-        }));
+      : setContacts(prev => [
+          ...prev,
+          {
+            name,
+            number,
+            id: crypto.randomUUID(),
+          },
+        ]);
+    window.localStorage.setItem('contactsArr', JSON.stringify(contacts));
   };
-
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
+  const delContact = id => {
+    setContacts(prev => prev.filter(contact => contact.id !== id));
   };
-
-  filterContacts = e => {
-    e.preventDefault();
-    const value = e.target.value;
-    this.setState({ filter: value });
+  const filterContacts = e => {
+    const { value } = e.target;
+    console.log(value);
+    setFilter(value);
   };
-  delContact = id => {
-    this.setState(prewState => ({
-      contacts: prewState.contacts.filter(contact => contact.id !== id),
-    }));
-  };
-  getFilteredContacts = () => {
-    return this.state.contacts.filter(contact =>
-      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+  const getFilteredContacts = () => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
-  render() {
-    return (
-      <>
-        <h1>Phonebook</h1>
-        <AddContactForm onSubmit={this.handleSubmit} />
-        {this.state.contacts.length === 0 ? (
-          <h2>No contacts yet</h2>
-        ) : (
-          <>
-            <h2>Contacts</h2>
-            <Filter
-              // filter={'filter'}
-              text={'text'}
-              value={this.state.filter}
-              cb={this.filterContacts}
-            />
+  return (
+    <>
+      <h1>Phonebook</h1>
+      <AddContactForm onSubmit={handleSubmit} />
+      {contacts.length === 0 ? (
+        <h2>No contacts yet</h2>
+      ) : (
+        <>
+          <h2>Contacts</h2>
+          <Filter
+            // filter={filter}
+            text={'text'}
+            value={filter}
+            cb={filterContacts}
+          />
 
-            <ContactsList
-              arr={this.getFilteredContacts()}
-              key={crypto.randomUUID}
-              cb={this.delContact}
-            />
-          </>
-        )}
-      </>
-    );
-  }
-}
+          <ContactsList
+            arr={getFilteredContacts()}
+            key={crypto.randomUUID}
+            cb={delContact}
+          />
+        </>
+      )}
+    </>
+  );
+};
+
+// export class App extends Component {
+//   state = {
+//     contacts: [],
+//     filter: '',
+//   };
+//   componentDidMount() {
+//     const data = JSON.parse(localStorage.getItem('contactsArr')) ?? [];
+//     this.setState({ contacts: data });
+//   }
+
+//   componentDidUpdate(_, prewState) {
+//     if (this.state.contacts !== prewState.contacts) {
+//       window.localStorage.setItem(
+//         'contactsArr',
+//         JSON.stringify(this.state.contacts)
+//       );
+//     }
+//   }
+
+//   handleSubmit = ({ name, number }) => {
+//     this.state.contacts.some(contact => contact.name === name)
+//       ? alert('Contact already exists')
+//       : this.setState(prewState => ({
+//           contacts: [
+//             ...prewState.contacts,
+//             {
+//               name,
+//               number,
+//               id: crypto.randomUUID(),
+//             },
+//           ],
+//         }));
+//   };
+
+//   handleChange = e => {
+//     const { name, value } = e.target;
+//     this.setState({ [name]: value });
+//   };
+
+//   filterContacts = e => {
+//     e.preventDefault();
+//     const value = e.target.value;
+//     this.setState({ filter: value });
+//   };
+//   delContact = id => {
+//     this.setState(prewState => ({
+//       contacts: prewState.contacts.filter(contact => contact.id !== id),
+//     }));
+//   };
+//   getFilteredContacts = () => {
+//     return this.state.contacts.filter(contact =>
+//       contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+//     );
+//   };
+//   render() {
+//     return (
+//       <>
+//         <h1>Phonebook</h1>
+//         <AddContactForm onSubmit={this.handleSubmit} />
+//         {this.state.contacts.length === 0 ? (
+//           <h2>No contacts yet</h2>
+//         ) : (
+//           <>
+//             <h2>Contacts</h2>
+//             <Filter
+//               // filter={'filter'}
+//               text={'text'}
+//               value={this.state.filter}
+//               cb={this.filterContacts}
+//             />
+
+//             <ContactsList
+//               arr={this.state.contacts}
+//               key={crypto.randomUUID}
+//               cb={this.delContact}
+//             />
+//           </>
+//         )}
+//       </>
+//     );
+//   }
+// }

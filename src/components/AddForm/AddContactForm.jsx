@@ -5,7 +5,7 @@ import { AddContactInput } from './AddFormInpt/AddFormInput';
 import { AddContactBtn } from './AddFormInpt/AddFormInput.styled';
 import { INIT_STATE } from 'INIT_STATE';
 
-export const AddContactForm = () => {
+export const AddContactForm = ({ onSubmit }) => {
   // const [name, setName] = useState(' ');
   // const [number, setNumber] = useState(' ');
   const [userData, setUserData] = useState({ ...INIT_STATE });
@@ -13,12 +13,15 @@ export const AddContactForm = () => {
   const handleChange = e => {
     // console.log(1);
     const { name, value } = e.target;
-    setUserData({ [name]: value });
-    console.log({ [name]: value });
+    setUserData(prev => ({ ...prev, [name]: value }));
+    console.log(userData);
   };
   const handleSubmit = e => {
     e.preventDefault();
+    // console.log(1);
+    onSubmit(userData);
     console.log(1);
+    setUserData({ ...INIT_STATE });
   };
   return (
     <StyledAddForm onSubmit={handleSubmit}>
@@ -57,23 +60,3 @@ export const AddContactForm = () => {
     </StyledAddForm>
   );
 };
-// export class AddContactForm extends Component {
-//   state = {
-//     name: '',
-//     number: '',
-//   };
-//   handleChange = e => {
-//     const { name, value } = e.target;
-//     this.setState({ [name]: value });
-//   };
-//   handleSubmit = e => {
-//     e.preventDefault();
-
-//     this.props.onSubmit(this.state);
-//     console.log(this.state);
-//     this.setState({ name: '', number: '' });
-//   };
-//   render() {
-//
-//   }
-// }
