@@ -9,7 +9,7 @@ import { Filter } from 'components/Filter/Filter';
 
 import { AddContactForm } from 'components/AddForm/AddContactForm';
 import { ContactsList } from 'components/ContactsList/ContactsList';
-
+// 1/
 export const App = () => {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
