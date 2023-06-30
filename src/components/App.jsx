@@ -11,23 +11,23 @@ import { AddContactForm } from 'components/AddForm/AddContactForm';
 import { ContactsList } from 'components/ContactsList/ContactsList';
 // 1/
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(
+    JSON.parse(localStorage.getItem('contactsArr')) ?? []
+  );
   const [filter, setFilter] = useState('');
-  const isFirstRender = useRef(true);
-  useEffect(() => {
-    if (isFirstRender.current) {
-      console.log('hi');
+  // const isFirstRender = useRef(true);
+  // useEffect(() => {
+  //   if (isFirstRender.current) {
+  //     console.log('hi');
 
-      const data = JSON.parse(localStorage.getItem('contactsArr')) ?? [];
-      setContacts(data);
-
-      isFirstRender.current = false;
-      // return;
-    } else {
-      console.log('hello');
-    }
-  }, [contacts]);
-
+  //     isFirstRender.current = false;
+  //     // return;
+  //   } else {
+  //     console.log('hello');
+  //   }
+  // }, [contacts]);
+  const updateLocalStorage = () =>
+    window.localStorage.setItem('contactsArr', JSON.stringify(contacts));
   const handleSubmit = ({ name, number }) => {
     contacts.some(contact => contact.name === name)
       ? alert('Contact already exists')
@@ -39,15 +39,16 @@ export const App = () => {
             id: crypto.randomUUID(),
           },
         ]);
-    window.localStorage.setItem('contactsArr', JSON.stringify(contacts));
+    updateLocalStorage();
   };
   const delContact = id => {
     setContacts(prev => prev.filter(contact => contact.id !== id));
+    updateLocalStorage();
   };
   const filterContacts = e => {
     const { value } = e.target;
     console.log(value);
-    setFilter(value);
+    setFilter(prev => ({ ...prev, value }));
   };
   const getFilteredContacts = () => {
     return contacts.filter(contact =>
