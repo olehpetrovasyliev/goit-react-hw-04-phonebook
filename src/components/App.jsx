@@ -31,9 +31,7 @@ export const App = () => {
     setContacts(prev => prev.filter(contact => contact.id !== id));
   };
   const filterContacts = e => {
-    const { value } = e.target;
-
-    setFilter(prev => ({ ...prev, value }));
+    setFilter(e.target.value);
   };
   const getFilteredContacts = () => {
     return contacts.filter(contact =>
